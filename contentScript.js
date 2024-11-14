@@ -1,5 +1,7 @@
 // contentScript.js
 
+console.log('Content script loaded.');
+
 let recognition;
 let isListening = false;
 
@@ -26,7 +28,6 @@ function initializeVoiceRecognition() {
 
   recognition.onerror = (event) => {
     console.error('Voice recognition error:', event.error);
-    // Optionally, you can restart recognition on certain errors
   };
 
   recognition.onend = () => {
@@ -85,14 +86,39 @@ function highlightText(term) {
   removeHighlights();
 
   const regex = new RegExp(`(${term})`, 'gi');
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+  traverseDOM(document.body, regex);
+}
 
-  while (walker.nextNode()) {
-    const node = walker.currentNode;
-    if (regex.test(node.nodeValue)) {
-      const span = document.createElement('mark');
-      span.innerHTML = node.nodeValue.replace(regex, '<mark>$1</mark>');
-      node.parentNode.replaceChild(span, node);
+function traverseDOM(element, regex) {
+  for (let node of element.childNodes) {
+    if (node.nodeType === 3) { // Text node
+      const matches = node.nodeValue.match(regex);
+      if (matches) {
+        const fragment = document.createDocumentFragment();
+        let lastIndex = 0;
+        regex.lastIndex = 0;
+        let match;
+
+        while ((match = regex.exec(node.nodeValue)) !== null) {
+          const precedingText = node.nodeValue.substring(lastIndex, match.index);
+          if (precedingText) {
+            fragment.appendChild(document.createTextNode(precedingText));
+          }
+          const mark = document.createElement('mark');
+          mark.textContent = match[0];
+          fragment.appendChild(mark);
+          lastIndex = regex.lastIndex;
+        }
+
+        const remainingText = node.nodeValue.substring(lastIndex);
+        if (remainingText) {
+          fragment.appendChild(document.createTextNode(remainingText));
+        }
+
+        node.parentNode.replaceChild(fragment, node);
+      }
+    } else if (node.nodeType === 1) { // Element node
+      traverseDOM(node, regex);
     }
   }
 }
@@ -106,21 +132,14 @@ function removeHighlights() {
   });
 }
 
-// Listen for messages from the popup or background script
+// Listen for messages from the popup script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log('Content script received message:', request);
+
   if (request.action === 'toggle') {
     toggleVoiceRecognition();
+    sendResponse({ isListening });
+  } else if (request.action === 'getStatus') {
+    sendResponse({ isListening });
   }
-  // contentScript.js (additional code)
-
-// Update the message listener
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === 'toggle') {
-      toggleVoiceRecognition();
-      sendResponse({ isListening });
-    } else if (request.action === 'getStatus') {
-      sendResponse({ isListening });
-    }
-  });
-  
 });
