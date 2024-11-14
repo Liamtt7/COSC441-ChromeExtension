@@ -1,0 +1,21 @@
+/* popup.css */
+
+body {
+    width: 200px;
+    padding: 10px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  
+  h1 {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  
+  #toggle-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
