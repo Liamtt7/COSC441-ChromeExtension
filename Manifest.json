@@ -1,23 +1,25 @@
 {
-    "manifest_version": 3,
-    "name": "Voice-Activated Web Navigation",
-    "version": "1.0",
-    "description": "Navigate webpages using voice commands.",
-    "permissions": ["scripting", "activeTab"],
-    "action": {
-      "default_popup": "popup.html",
-      "default_icon": {
-        "16": "icons/microphone.png"
-      }
-    },
-    "background": {
-      "service_worker": "background.js"
-    },
-    "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["contentScript.js"]
-      }
-    ]
-  }
-  
+  "manifest_version": 3,
+  "name": "Voice-Activated Web Navigation",
+  "version": "1.0",
+  "description": "Navigate webpages using voice commands.",
+  "permissions": ["scripting", "activeTab"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/microphone.png",
+      "32": "icons/microphone.png",
+      "48": "icons/microphone.png",
+      "128": "icons/microphone.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"]
+    }
+  ]
+}
