@@ -1,11 +1,16 @@
 {
-  "manifest_version": 3,
   "name": "Voice-Activated Web Navigation",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "Navigate webpages using voice commands.",
-  "permissions": ["scripting", "activeTab"],
+  "manifest_version": 3,
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": ["<all_urls>"],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "index.html",
     "default_icon": {
       "16": "icons/microphone.png",
       "32": "icons/microphone.png",
