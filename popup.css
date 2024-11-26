@@ -18,3 +18,42 @@ h1 {
   font-size: 16px;
   cursor: pointer;
 }
+
+/* Define in your CSS file or inject into the page */
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.popup-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background-color: #333;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  z-index: 9999;
+  animation: fadeInOut 2s forwards;
+}
+
+
+/* Custom Scrollbar Styles */
+#scroll-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 8px;
+  background-color: #4caf50; /* Green color */
+  z-index: 9999;
+  font-size: 12px;
+  color: white;
+  text-align: right;
+  line-height: 8px;
+  padding-right: 5px;
+  transition: width 0.2s ease-out;
+}

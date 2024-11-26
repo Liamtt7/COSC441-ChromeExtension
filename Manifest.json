@@ -3,7 +3,7 @@
   "name": "Voice-Activated Web Navigation",
   "version": "1.0",
   "description": "Navigate webpages using voice commands.",
-  "permissions": ["scripting", "activeTab"],
+  "permissions": ["scripting", "activeTab", "notifications", "search", "scripting"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -19,7 +19,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["contentScript.js"]
+      "js": ["contentScript.js", "dom-setup.js","scroll-percentege.js"]
     }
   ]
 }
