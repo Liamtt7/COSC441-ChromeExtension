@@ -42,7 +42,7 @@ h1 {
 }
 
 
-/* Custom Scrollbar Styles */
+/* Custom Scrollbar Styles 
 #scroll-indicator {
   position: fixed;
   top: 0;
@@ -55,4 +55,31 @@ h1 {
   padding-right: 5px;
   z-index: 9999;
   transition: width 0.2s ease-out;
+}*/
+/* Custom Scrollbar Styles */
+body::-webkit-scrollbar {
+  width: 16px; /* Width of the scrollbar */
+}
+
+body::-webkit-scrollbar-track {
+  background: #f4f4f4; /* Track color */
+  border-radius: 8px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #4caf50, #8bc34a); /* Gradient thumb color */
+  border-radius: 8px;
+  position: relative;
+}
+
+/* Add the scroll percentage to the scrollbar thumb */
+body::-webkit-scrollbar-thumb::after {
+  content: var(--scroll-percentage) '%'; /* Display scroll percentage */
+  color: white;
+  font-size: 10px;
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
 }

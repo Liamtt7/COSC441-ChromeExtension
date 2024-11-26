@@ -43,12 +43,19 @@ function toggleVoiceRecognition() {
     isListening = false;
     console.log('Voice recognition stopped.');
     alert('Voice recognition stopped.');
+
+    // Remove scroll percentage updates when stopping voice recognition
+    window.removeEventListener('scroll', updateScrollPercentage);
   } else {
     initializeVoiceRecognition();
     recognition.start();
     isListening = true;
     console.log('Voice recognition activated.');
     alert('Voice recognition started.');
+
+    // Add scroll percentage updates when starting voice recognition
+    window.addEventListener('scroll', updateScrollPercentage);
+    updateScrollPercentage(); // Initialize on activation
   }
 }
 
@@ -78,6 +85,7 @@ function handleVoiceCommand(command) {
     console.log('Command not recognized.');
   }
 }
+
 
 function highlightText(term) {
   if (!term) return;
