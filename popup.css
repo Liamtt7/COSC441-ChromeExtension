@@ -48,12 +48,11 @@ h1 {
   top: 0;
   left: 0;
   height: 8px;
-  background-color: #4caf50; /* Green color */
-  z-index: 9999;
-  font-size: 12px;
+  background-color: #4caf50;
   color: white;
   text-align: right;
   line-height: 8px;
   padding-right: 5px;
+  z-index: 9999;
   transition: width 0.2s ease-out;
 }
