@@ -59,6 +59,16 @@ function toggleVoiceRecognition() {
   }
 }
 
+function updateScrollPercentage() {
+  const scrollTop = window.scrollY;
+  const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const scrollPercentage = Math.min((scrollTop / scrollHeight) * 100, 100).toFixed(0);
+
+  // Set the custom attribute for the scrollbar thumb to display the percentage
+  document.documentElement.style.setProperty('--scroll-percentage', `${scrollPercentage}`);
+  console.log(`Scroll Percentage: ${scrollPercentage}%`); // Debugging
+}
+
 function handleVoiceCommand(command) {
   if (command.includes('scroll down')) {
     window.scrollBy(0, window.innerHeight / 2);
@@ -85,7 +95,6 @@ function handleVoiceCommand(command) {
     console.log('Command not recognized.');
   }
 }
-
 
 function highlightText(term) {
   if (!term) return;
