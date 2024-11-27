@@ -1,0 +1,44 @@
+body {
+    font-family:'cr-regulat', sans-serif;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+} 
+.study-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 25px;
+    height: 800vh;
+    display: none;
+}
+
+button{
+    width: 150px;
+    height: 75px;
+    border-radius: 5px;
+    font-size: 24px
+}
+
+section{
+    height: 200vh;
+}
+
+.break{
+    width: 100%;
+    border: 2px dashed #555;
+    margin: 0;
+}
+
+#study-gui {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    display: flex;
+}
