@@ -25,63 +25,127 @@ startStudyBtn.addEventListener("click", () => {
 
 // Start tracking scroll progress
 
-startTrackingBtn.addEventListener("click", () => {
-    instructions.textContent = "Say 'scroll down'";
-    isTracking = true;
-});
+// startTrackingBtn.addEventListener("click", () => {
+    
+    
+// });
 
 
 
 const startStudy = () => {
+    disableScrolling();
     studyActive = true;
-    studyController()
+    studyController();
     console.log("Study started.");
 };
 
 const endStudy = () => {
     studyActive = false;
-    console.log("Study ended.");
-    console.log(`Time taken: ${totalTime.toFixed(2)} ms`);
+    console.log("Study ended.");    
+    mainScreen.style.display = "flex";
+    studyScreen.style.display = "none";
+    //console.log(`Time taken: ${totalTime.toFixed(2)} ms`);
 };
 
-function studyController() {
+function waitForButtonClick(button) {
+    return new Promise((resolve) => {
+        const handleClick = () => {
+            isTracking = true;
+            enableScrolling();
+            button.removeEventListener("click", handleClick); // Remove the listener after resolving
+            resolve();
+        };
+        button.addEventListener("click", handleClick);
+    });
+}
+
+async function studyController() {
     for (let i = 0; i < reps; i++) {
-        scrollDownStudy();
+        await waitForButtonClick(startTrackingBtn);
+        await scrollDownStudy();
+        await waitForButtonClick(startTrackingBtn);
+        await scrollUpStudy();
     }
+    console.log("endStudy called");
+    endStudy();
 }
 
 function resetStudyScreen() {
+
     document.getElementById("half-section").scrollIntoView({ behavior: 'auto', block: 'start' });
+    disableScrolling();
     instructions.textContent = "";
 
 }
 
+function disableScrolling() {
+    document.body.style.overflow = 'hidden';
+}
+function enableScrolling() {
+    document.body.style.overflow = '';
+}
+
 function scrollDownStudy() {
+    return new Promise((resolve) => {
+        
+        const startScrollPosition = window.scrollY;
+        instructions.textContent = "Say 'scroll down'";
 
-    let done = false;
-    const startScrollPosition = window.scrollY;
-    window.addEventListener("scroll", () => {
-        if (isTracking) {
+        const handleScroll = () => {
             
-            const currentScrollPosition = window.scrollY - startScrollPosition;
+            if(isTracking){
+                const currentScrollPosition = window.scrollY - startScrollPosition;
+                const viewportHeight = window.innerHeight;
+                const totalHeight = document.body.scrollHeight - viewportHeight;
 
-            const viewportHeight = window.innerHeight;
-            const totalHeight = document.body.scrollHeight - viewportHeight;
-            const scrollPercentage = Math.round(((currentScrollPosition) / totalHeight) * 100);
+                const scrollPercentage = Math.round((currentScrollPosition / totalHeight) * 100);
+                progressDisplay.textContent = `Scroll progress: ${Math.max(0, scrollPercentage)}%`;
 
-            progressDisplay.textContent = `Scroll progress: ${scrollPercentage}%`;
-
-            // Check if user has scrolled down 25%
-            if (scrollPercentage >= 25) {
-                console.log("User has scrolled down 25% of the page.");
-                isTracking = false; // Stop tracking after detecting the threshold
-                resetStudyScreen();
+                if (scrollPercentage >= 25) {
+                    console.log("User has scrolled down 25% of the page.");
+                    isTracking = false;
+                    window.removeEventListener("scroll", handleScroll);
+                    resetStudyScreen();
+                    resolve(); // Resolve the Promise to indicate completion
+                }
             }
 
+        };
 
-        }
+        window.addEventListener("scroll", handleScroll);
     });
+}
 
+function scrollUpStudy() {
+    return new Promise((resolve) => {
+        const startScrollPosition = window.scrollY;
+        instructions.textContent = "Say 'scroll up'";
+
+        const handleScroll = () => {
+            if (isTracking) {
+                
+                const currentScrollPosition = window.scrollY - startScrollPosition;
+                const viewportHeight = window.innerHeight;
+                const totalHeight = document.body.scrollHeight - viewportHeight;
+
+                const scrollPercentage = Math.round((currentScrollPosition / totalHeight) * 100);
+                progressDisplay.textContent = `Scroll progress: ${Math.min(0, scrollPercentage)}%`;
+
+                // Check if user has scrolled down 25%
+                if (scrollPercentage <= -25) {
+                    console.log("User has scrolled up 25% of the page.");
+                    isTracking = false;
+                    window.removeEventListener("scroll", handleScroll);
+                    resetStudyScreen();
+                    resolve(); // Resolve the Promise to indicate completion
+                }
+
+
+            }
+        }
+
+        window.addEventListener("scroll", handleScroll);
+    });
 
 }
 
