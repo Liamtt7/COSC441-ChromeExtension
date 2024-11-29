@@ -18,6 +18,8 @@ h1 {
   font-size: 16px;
   cursor: pointer;
 }
+
+
 /* Define in your CSS file or inject into the page */
 
 /**
@@ -57,26 +59,26 @@ h1 {
   z-index: 9999;
   transition: width 0.2s ease-out;
 }*/
-/* Custom Scrollbar Styles */
+/* Custom Scrollbar Styles 
 body::-webkit-scrollbar {
-  width: 16px; /* Width of the scrollbar */
+  width: 16px; /* Width of the scrollbar 
 }
 
 body::-webkit-scrollbar-track {
-  background: #d1e5ff; /* Track color */
+  background: #d1e5ff; /* Track color 
   border-radius: 8px;
 }
 
 body::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #29e72f, #446321); /* Gradient thumb color */
+  background: linear-gradient(to bottom, #29e72f, #446321); /* Gradient thumb color 
   border-radius: 8px;
   position: relative;
 }
 
-/* Add the scroll percentage to the scrollbar thumb */
-/* Percentage Label */
+/* Add the scroll percentage to the scrollbar thumb 
+/* Percentage Label 
 body::-webkit-scrollbar-thumb::after {
-  content: attr(data-scroll-percentage) '%'; /* Placeholder for percentage */
+  content: attr(data-scroll-percentage) '%'; /* Placeholder for percentage 
   color: white;
   font-size: 12px;
   font-weight: bold;
@@ -85,4 +87,4 @@ body::-webkit-scrollbar-thumb::after {
   top: 50%;
   transform: translateY(-50%);
   text-align: center;
-}
+}*/

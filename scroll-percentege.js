@@ -19,26 +19,58 @@ window.addEventListener('scroll', updateScrollPercentage);
 // Initialize on load
 updateScrollPercentage();
 */
-// Function to calculate and update scroll percentage
+// Create the scroll indicator element
+// Create the scroll indicator element
+// Create the scroll indicator element
+const scrollIndicator = document.createElement('div');
+scrollIndicator.id = 'vn-scroll-indicator';
+
+// Create the percentage text element
+const percentageText = document.createElement('span');
+percentageText.id = 'vn-percentage-text';
+percentageText.textContent = '0%'; // Initialize with 0%
+
+scrollIndicator.appendChild(percentageText);
+// Style the scroll indicator
+scrollIndicator.style.position = 'fixed';
+scrollIndicator.style.top = '0';
+scrollIndicator.style.left = '0';
+scrollIndicator.style.height = '12px';
+scrollIndicator.style.backgroundColor = '#29e';
+scrollIndicator.style.zIndex = '9999';
+scrollIndicator.style.width = '0%';
+scrollIndicator.style.display = 'flex';
+scrollIndicator.style.alignItems = 'center';
+scrollIndicator.style.justifyContent = 'center';
+scrollIndicator.style.color = '#fff';
+scrollIndicator.style.fontWeight = 'bold';
+
+
+percentageText.style.fontSize = '7px';
+percentageText.style.margin = '0';
+
+// Append the scroll indicator to the body
+document.body.appendChild(scrollIndicator);
+
+
 function updateScrollPercentage() {
-  // Calculate the current scroll percentage
-  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-  const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-  const scrollPercentage = Math.round((scrollTop / scrollHeight) * 100);
+  const scrollTop = window.scrollY || window.pageYOffset;
+  const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+  let scrollPercentage = (scrollTop / scrollHeight) * 100;
 
-  // Update the scrollbar thumb's percentage display
-  document.documentElement.style.setProperty('--scroll-percentage', scrollPercentage);
-  document.body.style.setProperty('--scroll-percentage', scrollPercentage);
+  // Ensure the percentage is between 0% and 100%
+  scrollPercentage = Math.min(Math.max(scrollPercentage, 0), 100);
+  const roundedPercentage = Math.round(scrollPercentage);
 
-  // Directly apply the percentage to the scrollbar thumb
-  const thumb = document.querySelector("body::-webkit-scrollbar-thumb");
-  if (thumb) {
-    thumb.setAttribute("data-scroll-percentage", scrollPercentage);
-  }
+  // Update the width of the scroll indicator
+  scrollIndicator.style.width = scrollPercentage + '%';
+
+  // Update the percentage text
+  percentageText.textContent = roundedPercentage + '%';
 }
 
 // Attach the scroll event listener
 window.addEventListener('scroll', updateScrollPercentage);
 
 // Initialize the scroll percentage when the page loads
-document.addEventListener('DOMContentLoaded', updateScrollPercentage);
+window.addEventListener('load', updateScrollPercentage);

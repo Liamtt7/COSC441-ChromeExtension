@@ -42,20 +42,15 @@ function toggleVoiceRecognition() {
     recognition.stop();
     isListening = false;
     console.log('Voice recognition stopped.');
-    alert('Voice recognition stopped.'); //change for a temporary pop-up
-
-    // Remove scroll percentage updates when stopping voice recognition
-    window.removeEventListener('scroll', updateScrollPercentage);
+    alert('Voice recognition stopped.');
   } else {
     initializeVoiceRecognition();
     recognition.start();
     isListening = true;
     console.log('Voice recognition activated.');
-    alert('Voice recognition started.'); //change for a temporary pop-up
-
+    alert('Voice recognition started.');
   }
 }
-
 const initialStyles = {
   zoom: document.body.style.zoom || "1",
   transform: document.body.style.transform || "",
