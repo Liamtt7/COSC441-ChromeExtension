@@ -42,7 +42,7 @@ function toggleVoiceRecognition() {
     recognition.stop();
     isListening = false;
     console.log('Voice recognition stopped.');
-    alert('Voice recognition stopped.');
+    alert('Voice recognition stopped.'); //change for a temporary pop-up
 
     // Remove scroll percentage updates when stopping voice recognition
     window.removeEventListener('scroll', updateScrollPercentage);
@@ -51,23 +51,16 @@ function toggleVoiceRecognition() {
     recognition.start();
     isListening = true;
     console.log('Voice recognition activated.');
-    alert('Voice recognition started.');
+    alert('Voice recognition started.'); //change for a temporary pop-up
 
-    // Add scroll percentage updates when starting voice recognition
-    window.addEventListener('scroll', updateScrollPercentage);
-    updateScrollPercentage(); // Initialize on activation
   }
 }
 
-function updateScrollPercentage() {
-  const scrollTop = window.scrollY;
-  const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-  const scrollPercentage = Math.min((scrollTop / scrollHeight) * 100, 100).toFixed(0);
-
-  // Set the custom attribute for the scrollbar thumb to display the percentage
-  document.documentElement.style.setProperty('--scroll-percentage', `${scrollPercentage}`);
-  console.log(`Scroll Percentage: ${scrollPercentage}%`); // Debugging
-}
+const initialStyles = {
+  zoom: document.body.style.zoom || "1",
+  transform: document.body.style.transform || "",
+  fontSize: document.body.style.fontSize || ""
+};
 
 function handleVoiceCommand(command) {
   if (command.includes('scroll down')) {
@@ -79,11 +72,11 @@ function handleVoiceCommand(command) {
   } else if (command.includes('scroll to bottom')) {
     window.scrollTo(0, document.body.scrollHeight);
   } else if (command.includes('zoom in')) {
-    document.body.style.zoom = (parseFloat(document.body.style.zoom) || 1) + 0.1;
+    document.body.style.zoom = (parseFloat(document.body.style.zoom) || 1) + 0.2;
   } else if (command.includes('zoom out')) {
-    document.body.style.zoom = (parseFloat(document.body.style.zoom) || 1) - 0.1;
+    document.body.style.zoom = (parseFloat(document.body.style.zoom) || 1) - 0.2;
   } else if (command.includes('reset zoom')) {
-    document.body.style.zoom = 1;
+    document.body.style.zoom = initialZoom; // Reset to the stored initial state
   } else if (command.includes('search for')) {
     const searchTerm = command.replace('search for', '').trim();
     if (searchTerm) {

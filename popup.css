@@ -18,8 +18,9 @@ h1 {
   font-size: 16px;
   cursor: pointer;
 }
-
 /* Define in your CSS file or inject into the page */
+
+/**
 @keyframes fadeInOut {
   0% { opacity: 0; }
   10% { opacity: 1; }
@@ -41,7 +42,7 @@ h1 {
   animation: fadeInOut 2s forwards;
 }
 
-
+*/
 /* Custom Scrollbar Styles 
 #scroll-indicator {
   position: fixed;
@@ -62,23 +63,25 @@ body::-webkit-scrollbar {
 }
 
 body::-webkit-scrollbar-track {
-  background: #f4f4f4; /* Track color */
+  background: #d1e5ff; /* Track color */
   border-radius: 8px;
 }
 
 body::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #4caf50, #8bc34a); /* Gradient thumb color */
+  background: linear-gradient(to bottom, #29e72f, #446321); /* Gradient thumb color */
   border-radius: 8px;
   position: relative;
 }
 
 /* Add the scroll percentage to the scrollbar thumb */
+/* Percentage Label */
 body::-webkit-scrollbar-thumb::after {
-  content: var(--scroll-percentage) '%'; /* Display scroll percentage */
+  content: attr(data-scroll-percentage) '%'; /* Placeholder for percentage */
   color: white;
-  font-size: 10px;
+  font-size: 12px;
+  font-weight: bold;
   position: absolute;
-  right: 2px;
+  right: 5px;
   top: 50%;
   transform: translateY(-50%);
   text-align: center;
