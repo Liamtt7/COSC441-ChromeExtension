@@ -51,13 +51,9 @@ function toggleVoiceRecognition() {
     alert('Voice recognition started.');
   }
 }
-const initialStyles = {
-  zoom: document.body.style.zoom || "1",
-  transform: document.body.style.transform || "",
-  fontSize: document.body.style.fontSize || ""
-};
-
 function handleVoiceCommand(command) {
+  command = command.toLowerCase(); // Normalize the command to lowercase for consistent matching
+
   if (command.includes('scroll down')) {
     window.scrollBy(0, window.innerHeight / 2);
   } else if (command.includes('scroll up')) {
@@ -66,12 +62,24 @@ function handleVoiceCommand(command) {
     window.scrollTo(0, 0);
   } else if (command.includes('scroll to bottom')) {
     window.scrollTo(0, document.body.scrollHeight);
+  } else if (command.includes('scroll to middle')) {
+    const middlePosition = (document.body.scrollHeight - window.innerHeight) / 2;
+    window.scrollTo(0, middlePosition);
+  } else if (command.match(/scroll (\d+)%/)) {
+    const match = command.match(/scroll (\d+)%/);
+    const percentage = parseInt(match[1]);
+    if (percentage >= 0 && percentage <= 100) {
+      const scrollPosition = (document.body.scrollHeight - window.innerHeight) * (percentage / 100);
+      window.scrollTo(0, scrollPosition);
+    } else {
+      console.log('Percentage out of range (0-100).');
+    }
   } else if (command.includes('zoom in')) {
-    document.body.style.zoom = (parseFloat(document.body.style.zoom) || 1) + 0.2;
+    document.body.style.zoom = (parseFloat(document.body.style.zoom) || 1) + 0.1;
   } else if (command.includes('zoom out')) {
-    document.body.style.zoom = (parseFloat(document.body.style.zoom) || 1) - 0.2;
+    document.body.style.zoom = (parseFloat(document.body.style.zoom) || 1) - 0.1;
   } else if (command.includes('reset zoom')) {
-    document.body.style.zoom = initialZoom; // Reset to the stored initial state
+    document.body.style.zoom = 1;
   } else if (command.includes('search for')) {
     const searchTerm = command.replace('search for', '').trim();
     if (searchTerm) {
@@ -84,15 +92,71 @@ function handleVoiceCommand(command) {
   }
 }
 
+
 function highlightText(term) {
   if (!term) return;
 
   // Remove previous highlights
   removeHighlights();
 
-  const regex = new RegExp(`(${term})`, 'gi');
-  traverseDOM(document.body, regex);
+  const regex = new RegExp(`(${escapeRegExp(term)})`, 'gi');
+
+  const body = document.body;
+
+  const walker = document.createTreeWalker(
+    body,
+    NodeFilter.SHOW_TEXT,
+    {
+      acceptNode: function(node) {
+        if (node.parentNode && node.parentNode.nodeName !== 'SCRIPT' && node.parentNode.nodeName !== 'STYLE') {
+          return NodeFilter.FILTER_ACCEPT;
+        }
+        return NodeFilter.FILTER_REJECT;
+      }
+    },
+    false
+  );
+
+  const textNodes = [];
+  while (walker.nextNode()) {
+    textNodes.push(walker.currentNode);
+  }
+
+  textNodes.forEach(node => {
+    const matches = node.nodeValue.match(regex);
+    if (matches) {
+      const fragment = document.createDocumentFragment();
+      let lastIndex = 0;
+      regex.lastIndex = 0;
+      let match;
+
+      while ((match = regex.exec(node.nodeValue)) !== null) {
+        const precedingText = node.nodeValue.substring(lastIndex, match.index);
+        if (precedingText) {
+          fragment.appendChild(document.createTextNode(precedingText));
+        }
+        const mark = document.createElement('mark');
+        mark.textContent = match[0];
+        mark.style.backgroundColor = 'yellow'; // Ensure highlight color
+        mark.style.color = 'black';
+        fragment.appendChild(mark);
+        lastIndex = regex.lastIndex;
+      }
+
+      const remainingText = node.nodeValue.substring(lastIndex);
+      if (remainingText) {
+        fragment.appendChild(document.createTextNode(remainingText));
+      }
+
+      node.parentNode.replaceChild(fragment, node);
+    }
+  });
 }
+
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 
 function traverseDOM(element, regex) {
   for (let node of element.childNodes) {
@@ -136,6 +200,17 @@ function removeHighlights() {
     parent.normalize();
   });
 }
+
+function debounce(func, wait) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
+
+const debouncedHighlightText = debounce(highlightText, 300);
+
 
 // Listen for messages from the popup script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
