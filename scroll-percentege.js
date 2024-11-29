@@ -1,4 +1,5 @@
 // scroll-percentage.js
+console.log('scroll-percentage.js loaded.');
 
 const scrollIndicator = document.createElement('div');
 scrollIndicator.id = 'vn-scroll-indicator';
