@@ -9,6 +9,15 @@ main {
     justify-content: center;
     height: 100vh;
 } 
+/* .study-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 25px;
+    height: 800vh;
+    display: none;
+} */
+
 .study-screen {
     display: flex;
     flex-direction: column;
@@ -16,6 +25,45 @@ main {
     margin-top: 25px;
     height: 800vh;
     display: none;
+    position: relative;
+    padding-top: 5rem; /* To account for the navbar height */
+    display: none;
+}
+
+#study-gui {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    height: 25vh; /* Full viewport height */
+    background: linear-gradient(135deg, #ffffff, #f0f4f8);
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+#study-gui button {
+    display: block;
+    margin: 1rem auto;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+#study-gui p {
+    font-size: 1rem;
+    color: #333;
+    text-align: center;
+    margin: 0.5rem 0; /* Decrease vertical spacing */
+    padding: 0;
 }
 
 button{
@@ -33,12 +81,4 @@ section{
     width: 100%;
     border: 2px dashed #555;
     margin: 0;
-}
-
-#study-gui {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 250px;
-    display: flex;
 }

@@ -12,7 +12,7 @@ const progressDisplay = document.getElementById("progress");
 
 let lastScrollPosition = 0; // Store last scroll position
 
-let reps = 1;
+let reps = 3;
 
 
 // Switch to the study screen
@@ -22,14 +22,6 @@ startStudyBtn.addEventListener("click", () => {
     document.getElementById("half-section").scrollIntoView({ behavior: 'auto', block: 'start' });
     startStudy();
 });
-
-// Start tracking scroll progress
-
-// startTrackingBtn.addEventListener("click", () => {
-    
-    
-// });
-
 
 
 const startStudy = () => {
@@ -44,7 +36,6 @@ const endStudy = () => {
     console.log("Study ended.");    
     mainScreen.style.display = "flex";
     studyScreen.style.display = "none";
-    //console.log(`Time taken: ${totalTime.toFixed(2)} ms`);
 };
 
 function waitForButtonClick(button) {
@@ -52,7 +43,7 @@ function waitForButtonClick(button) {
         const handleClick = () => {
             isTracking = true;
             enableScrolling();
-            button.removeEventListener("click", handleClick); // Remove the listener after resolving
+            button.removeEventListener("click", handleClick); // remove the listener
             resolve();
         };
         button.addEventListener("click", handleClick);
@@ -60,14 +51,31 @@ function waitForButtonClick(button) {
 }
 
 async function studyController() {
+    const data = [["Task", "Task Time"]]
+
     for (let i = 0; i < reps; i++) {
         await waitForButtonClick(startTrackingBtn);
-        await scrollDownStudy();
+        const scrollDownTime = await scrollDownStudy();
+        data.push(["Down", scrollDownTime.toFixed(2)]);
+
         await waitForButtonClick(startTrackingBtn);
-        await scrollUpStudy();
+
+        const scrollUpTime = await scrollUpStudy();
+        data.push(["Up", scrollUpTime.toFixed(2)]);
     }
     console.log("endStudy called");
+    logDataToCSV(data);
     endStudy();
+}
+
+function logDataToCSV(data) {
+    const csvContent = data.map((row) => row.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "study_data.csv";
+    link.click();
+    console.log("CSV file saved");
 }
 
 function resetStudyScreen() {
@@ -90,6 +98,7 @@ function scrollDownStudy() {
         
         const startScrollPosition = window.scrollY;
         instructions.textContent = "Say 'scroll down'";
+        const startTime = Date.now();
 
         const handleScroll = () => {
             
@@ -102,11 +111,12 @@ function scrollDownStudy() {
                 progressDisplay.textContent = `Scroll progress: ${Math.max(0, scrollPercentage)}%`;
 
                 if (scrollPercentage >= 25) {
-                    console.log("User has scrolled down 25% of the page.");
+                    const elapsedTime = (Date.now() - startTime) / 1000;
+                    console.log(`User has scrolled down 25% of the page in ${elapsedTime.toFixed(2)} seconds.`);
                     isTracking = false;
                     window.removeEventListener("scroll", handleScroll);
                     resetStudyScreen();
-                    resolve(); // Resolve the Promise to indicate completion
+                    resolve(elapsedTime);
                 }
             }
 
@@ -120,6 +130,7 @@ function scrollUpStudy() {
     return new Promise((resolve) => {
         const startScrollPosition = window.scrollY;
         instructions.textContent = "Say 'scroll up'";
+        const startTime = Date.now();
 
         const handleScroll = () => {
             if (isTracking) {
@@ -133,11 +144,12 @@ function scrollUpStudy() {
 
                 // Check if user has scrolled down 25%
                 if (scrollPercentage <= -25) {
-                    console.log("User has scrolled up 25% of the page.");
+                    const elapsedTime = (Date.now() - startTime) / 1000;
+                    console.log(`User has scrolled up 25% of the page in ${elapsedTime.toFixed(2)} seconds.`);
                     isTracking = false;
                     window.removeEventListener("scroll", handleScroll);
                     resetStudyScreen();
-                    resolve(); // Resolve the Promise to indicate completion
+                    resolve(elapsedTime);
                 }
 
 
