@@ -12,7 +12,7 @@ const progressDisplay = document.getElementById("progress");
 
 let lastScrollPosition = 0; // Store last scroll position
 
-let reps = 3;
+let reps = 1;
 
 
 // Switch to the study screen
@@ -62,6 +62,14 @@ async function studyController() {
 
         const scrollUpTime = await scrollUpStudy();
         data.push(["Up", scrollUpTime.toFixed(2)]);
+
+        await waitForButtonClick(startTrackingBtn);
+        const scrollToBottomTime = await scrollToBottomStudy();
+        data.push(["bottom", scrollToBottomTime.toFixed(2)]);
+
+        await waitForButtonClick(startTrackingBtn);
+        const scrollToTopTime = await scrollToTopStudy();
+        data.push(["top", scrollToTopTime.toFixed(2)]);
     }
     console.log("endStudy called");
     logDataToCSV(data);
@@ -161,4 +169,66 @@ function scrollUpStudy() {
 
 }
 
+function scrollToTopStudy(){
+    return new Promise((resolve) => {
+        const startScrollPosition = window.scrollY;
+        instructions.textContent = "Say 'scroll to top'";
+        const startTime = Date.now();
+
+        const handleScroll = () => {
+            if (isTracking) {
+                
+                const currentScrollPosition = window.scrollY;
+                const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+                // Update progress display to show percentage of scroll up
+                const scrollPercentage = Math.round((currentScrollPosition / totalHeight) * 100);
+                progressDisplay.textContent = `Scroll progress: ${Math.min(100, Math.round((currentScrollPosition / totalHeight) * 100))}%`;
+
+                // Check if user has scrolled up 100%
+                if (scrollPercentage <= 0) {
+                    const elapsedTime = (Date.now() - startTime) / 1000;
+                    console.log(`User has scrolled up 100% of the page in ${elapsedTime.toFixed(2)} seconds.`);
+                    isTracking = false;
+                    window.removeEventListener("scroll", handleScroll);
+                    resetStudyScreen();
+                    resolve(elapsedTime);
+                }
+
+
+            }
+        }
+
+        window.addEventListener("scroll", handleScroll);
+    });
+}
+
+function scrollToBottomStudy() {
+    return new Promise((resolve) => {
+        const startScrollPosition = window.scrollY;
+        instructions.textContent = "Say 'scroll to bottom'";
+        const startTime = Date.now();
+
+        const handleScroll = () => {
+            if (isTracking) {
+                const currentScrollPosition = window.scrollY + window.innerHeight;
+                const totalHeight = document.documentElement.scrollHeight;
+
+                progressDisplay.textContent = `Scroll progress: ${Math.min(100, Math.round((currentScrollPosition / totalHeight) * 100))}%`;
+
+                // Check if user has reached the bottom of the page
+                if (currentScrollPosition >= totalHeight) {
+                    const elapsedTime = (Date.now() - startTime) / 1000;
+                    console.log(`User has scrolled to the bottom of the page in ${elapsedTime.toFixed(2)} seconds.`);
+                    isTracking = false;
+                    window.removeEventListener("scroll", handleScroll);
+                    resetStudyScreen();
+                    resolve(elapsedTime);
+                }
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+    });
+}
 
