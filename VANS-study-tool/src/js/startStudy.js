@@ -9,10 +9,10 @@ const startTrackingBtn = document.getElementById("start-tracking-btn");
 const instructions = document.getElementById("instructions");
 const progressDisplay = document.getElementById("progress");
 
+//last scroll position. Used in logic in the study functions.
+let lastScrollPosition = 0;
 
-let lastScrollPosition = 0; // Store last scroll position
-
-let reps = 1;
+let reps = 3;
 
 
 // Switch to the study screen
@@ -21,7 +21,7 @@ startStudyBtn.addEventListener("click", () => {
     studyScreen.style.display = "flex";
     window.scrollBy({
         top: studyScreen.offsetHeight / 2,
-        behavior: 'auto' // Change to 'smooth' for smooth scrolling
+        behavior: 'auto'
     });
     startStudy();
 });
@@ -46,7 +46,7 @@ function waitForButtonClick(button) {
         const handleClick = () => {
             isTracking = true;
             enableScrolling();
-            button.removeEventListener("click", handleClick); // remove the listener
+            button.removeEventListener("click", handleClick);
             resolve();
         };
         button.addEventListener("click", handleClick);
@@ -58,25 +58,35 @@ async function studyController() {
 
     for (let i = 0; i < reps; i++) {
         await waitForButtonClick(startTrackingBtn);
-        const scrollDownTime = await scrollDownStudy();
-        data.push(["Down", scrollDownTime.toFixed(2)]);
-
-        await waitForButtonClick(startTrackingBtn);
-
         const scrollUpTime = await scrollUpStudy();
         data.push(["Up", scrollUpTime.toFixed(2)]);
-
+    }
+    for(let i = 0; i < reps; i++){
+        await waitForButtonClick(startTrackingBtn);
+        const scrollDownTime = await scrollDownStudy();
+        data.push(["Down", scrollDownTime.toFixed(2)]);
+    }
+    for (let i = 0; i < reps; i++) {
+        await waitForButtonClick(startTrackingBtn);
+        const scrollToMiddleTime = await scrollToMiddleStudy();
+        data.push(["middle", scrollToMiddleTime.toFixed(2)]);
+    }
+    for (let i = 0; i < reps; i++) {
         await waitForButtonClick(startTrackingBtn);
         const scrollToBottomTime = await scrollToBottomStudy();
         data.push(["bottom", scrollToBottomTime.toFixed(2)]);
-
+    }
+    for (let i = 0; i < reps; i++) {
         await waitForButtonClick(startTrackingBtn);
         const scrollToTopTime = await scrollToTopStudy();
         data.push(["top", scrollToTopTime.toFixed(2)]);
     }
+
+
     console.log("endStudy called");
     logDataToCSV(data);
     endStudy();
+
 }
 
 function logDataToCSV(data) {
@@ -96,7 +106,7 @@ function resetStudyScreen() {
     // Scroll the page so that the view aligns with 50% of the study-screen height
     window.scrollTo({
         top: studyScreen.offsetTop + halfHeight - (window.innerHeight / 2),
-        behavior: 'auto' // Use 'smooth' for smooth scrolling
+        behavior: 'auto'
     });
     disableScrolling();
     instructions.textContent = "";
@@ -234,6 +244,35 @@ function scrollToBottomStudy() {
                     resetStudyScreen();
                     resolve(elapsedTime);
                 }
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+    });
+}
+
+function scrollToMiddleStudy() {
+    return new Promise((resolve) => {
+        // Scroll to the top of the page
+        window.scrollTo(0, 0);
+
+        instructions.textContent = "Say 'scroll to middle'";
+        const startTime = Date.now();
+
+        const handleScroll = () => {
+            const currentScrollPosition = window.scrollY + window.innerHeight;
+            const totalHeight = document.documentElement.scrollHeight;
+            const halfwayPoint = totalHeight / 2;
+
+            progressDisplay.textContent = `Scroll progress: ${Math.min(100, Math.round((currentScrollPosition / totalHeight) * 100))}%`;
+
+            // Check if user has reached or passed the halfway point of the page
+            if (currentScrollPosition >= halfwayPoint) {
+                const elapsedTime = (Date.now() - startTime) / 1000;
+                console.log(`User has scrolled to at least 50% of the page in ${elapsedTime.toFixed(2)} seconds.`);
+                window.removeEventListener("scroll", handleScroll);
+                resetStudyScreen();
+                resolve(elapsedTime);
             }
         };
 

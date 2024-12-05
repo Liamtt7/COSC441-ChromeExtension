@@ -9,14 +9,7 @@ main {
     justify-content: center;
     height: 100vh;
 } 
-/* .study-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 25px;
-    height: 800vh;
-    display: none;
-} */
+
 
 .study-screen {
     display: flex;
@@ -26,7 +19,7 @@ main {
     height: 800vh;
     display: none;
     position: relative;
-    padding-top: 5rem; /* To account for the navbar height */
+    padding-top: 5rem;
     display: none;
 }
 
@@ -36,7 +29,7 @@ main {
     left: 50%;
     transform: translateX(-50%);
     width: 50%;
-    height: 25vh; /* Full viewport height */
+    height: 25vh;
     background: linear-gradient(135deg, #ffffff, #f0f4f8);
     border: 2px solid #e0e0e0;
     border-radius: 12px;
@@ -62,7 +55,7 @@ main {
     font-size: 1rem;
     color: #333;
     text-align: center;
-    margin: 0.5rem 0; /* Decrease vertical spacing */
+    margin: 0.5rem 0;
     padding: 0;
 }
 
