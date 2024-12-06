@@ -19,7 +19,10 @@ let reps = 1;
 startStudyBtn.addEventListener("click", () => {
     mainScreen.style.display = "none";
     studyScreen.style.display = "flex";
-    document.getElementById("half-section").scrollIntoView({ behavior: 'auto', block: 'start' });
+    window.scrollBy({
+        top: studyScreen.offsetHeight / 2,
+        behavior: 'auto' // Change to 'smooth' for smooth scrolling
+    });
     startStudy();
 });
 
@@ -88,7 +91,13 @@ function logDataToCSV(data) {
 
 function resetStudyScreen() {
 
-    document.getElementById("half-section").scrollIntoView({ behavior: 'auto', block: 'start' });
+    const halfHeight = studyScreen.offsetHeight / 2;
+
+    // Scroll the page so that the view aligns with 50% of the study-screen height
+    window.scrollTo({
+        top: studyScreen.offsetTop + halfHeight - (window.innerHeight / 2),
+        behavior: 'auto' // Use 'smooth' for smooth scrolling
+    });
     disableScrolling();
     instructions.textContent = "";
 
