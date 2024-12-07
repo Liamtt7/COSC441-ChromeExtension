@@ -2,6 +2,7 @@
 let studyActive = false;
 let isTracking = false;
 
+//DOM elements
 const startStudyBtn = document.getElementById("start-study-btn");
 const studyScreen = document.querySelector(".study-screen");
 const mainScreen = document.querySelector("main");
@@ -53,6 +54,7 @@ function waitForButtonClick(button) {
     });
 }
 
+//Controls the flow of tasks, manually rearranged to compensate for learnability.
 async function studyController() {
     const data = [["Task", "Task Time"]]
 
@@ -89,6 +91,7 @@ async function studyController() {
 
 }
 
+//logs the data to a csv file and downloads it to the browser.
 function logDataToCSV(data) {
     const csvContent = data.map((row) => row.join(",")).join("\n");
     const blob = new Blob([csvContent], { type: "text/csv" });
@@ -99,10 +102,9 @@ function logDataToCSV(data) {
     console.log("CSV file saved");
 }
 
+//resets to the midle of the screen to prepare for the next study
 function resetStudyScreen() {
-
     const halfHeight = studyScreen.offsetHeight / 2;
-
     // Scroll the page so that the view aligns with 50% of the study-screen height
     window.scrollTo({
         top: studyScreen.offsetTop + halfHeight - (window.innerHeight / 2),
@@ -110,7 +112,6 @@ function resetStudyScreen() {
     });
     disableScrolling();
     instructions.textContent = "";
-
 }
 
 function disableScrolling() {
@@ -120,15 +121,16 @@ function enableScrolling() {
     document.body.style.overflow = '';
 }
 
+//Detects when a user has scrolled down 25% of the page
 function scrollDownStudy() {
     return new Promise((resolve) => {
+        
         
         const startScrollPosition = window.scrollY;
         instructions.textContent = "Say 'scroll down'";
         const startTime = Date.now();
 
         const handleScroll = () => {
-            
             if(isTracking){
                 const currentScrollPosition = window.scrollY - startScrollPosition;
                 const viewportHeight = window.innerHeight;
@@ -153,6 +155,7 @@ function scrollDownStudy() {
     });
 }
 
+//Detects when a user has scrolled up 25% of the page
 function scrollUpStudy() {
     return new Promise((resolve) => {
         const startScrollPosition = window.scrollY;
@@ -188,9 +191,9 @@ function scrollUpStudy() {
 
 }
 
+//Detects when a user has scrolled to the top of the page
 function scrollToTopStudy(){
     return new Promise((resolve) => {
-        const startScrollPosition = window.scrollY;
         instructions.textContent = "Say 'scroll to top'";
         const startTime = Date.now();
 
@@ -222,9 +225,10 @@ function scrollToTopStudy(){
     });
 }
 
+
+//Detects when a user has scrolled to the bottom of the page
 function scrollToBottomStudy() {
     return new Promise((resolve) => {
-        const startScrollPosition = window.scrollY;
         instructions.textContent = "Say 'scroll to bottom'";
         const startTime = Date.now();
 
@@ -251,6 +255,7 @@ function scrollToBottomStudy() {
     });
 }
 
+//Detects when a user has scrolled to the middle of the page
 function scrollToMiddleStudy() {
     return new Promise((resolve) => {
         // Scroll to the top of the page

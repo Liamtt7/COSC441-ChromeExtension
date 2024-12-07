@@ -10,7 +10,6 @@ main {
     height: 100vh;
 } 
 
-
 .study-screen {
     display: flex;
     flex-direction: column;
